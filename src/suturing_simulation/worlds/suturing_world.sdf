@@ -140,43 +140,45 @@
         <pose>0 0 0 0 0 0</pose>
         <visual name="base_visual">
           <geometry>
-            <box>
-              <size>0.2 0.2 0.1</size>
-            </box>
+            <cylinder>
+              <radius>0.15</radius>
+              <length>0.1</length>
+            </cylinder>
           </geometry>
           <material>
-            <ambient>0.5 0.5 0.5 1</ambient>
-            <diffuse>0.5 0.5 0.5 1</diffuse>
+            <ambient>0.7 0.7 0.7 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
           </material>
         </visual>
         <collision name="base_collision">
           <geometry>
-            <box>
-              <size>0.2 0.2 0.1</size>
-            </box>
+            <cylinder>
+              <radius>0.15</radius>
+              <length>0.1</length>
+            </cylinder>
           </geometry>
         </collision>
         <inertial>
-          <mass>1.0</mass>
+          <mass>2.0</mass>
           <inertia>
-            <ixx>0.01</ixx>
+            <ixx>0.1</ixx>
             <ixy>0</ixy>
             <ixz>0</ixz>
-            <iyy>0.01</iyy>
+            <iyy>0.1</iyy>
             <iyz>0</iyz>
-            <izz>0.01</izz>
+            <izz>0.1</izz>
           </inertia>
         </inertial>
       </link>
 
-      <!-- Arm 1 Base -->
+      <!-- Arm 1 (Suturing Arm) -->
       <link name="arm1_base">
-        <pose>0.15 0 0.05 0 0 0</pose>
+        <pose>0.2 0 0.05 0 0 0</pose>
         <visual name="arm1_base_visual">
           <geometry>
             <cylinder>
-              <radius>0.05</radius>
-              <length>0.1</length>
+              <radius>0.03</radius>
+              <length>0.2</length>
             </cylinder>
           </geometry>
           <material>
@@ -187,8 +189,8 @@
         <collision name="arm1_base_collision">
           <geometry>
             <cylinder>
-              <radius>0.05</radius>
-              <length>0.1</length>
+              <radius>0.03</radius>
+              <length>0.2</length>
             </cylinder>
           </geometry>
         </collision>
@@ -205,26 +207,62 @@
         </inertial>
       </link>
 
-      <!-- Arm 2 Base -->
-      <link name="arm2_base">
-        <pose>-0.15 0 0.05 0 0 0</pose>
-        <visual name="arm2_base_visual">
+      <!-- Arm 1 Upper Link -->
+      <link name="arm1_upper">
+        <pose>0.2 0 0.25 0 0 0</pose>
+        <visual name="arm1_upper_visual">
           <geometry>
             <cylinder>
-              <radius>0.05</radius>
-              <length>0.1</length>
+              <radius>0.02</radius>
+              <length>0.3</length>
             </cylinder>
           </geometry>
           <material>
-            <ambient>0 1 0 1</ambient>
-            <diffuse>0 1 0 1</diffuse>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <collision name="arm1_upper_collision">
+          <geometry>
+            <cylinder>
+              <radius>0.02</radius>
+              <length>0.3</length>
+            </cylinder>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass>0.5</mass>
+          <inertia>
+            <ixx>0.01</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.01</iyy>
+            <iyz>0</iyz>
+            <izz>0.01</izz>
+          </inertia>
+        </inertial>
+      </link>
+
+      <!-- Arm 2 (Second Arm) -->
+      <link name="arm2_base">
+        <pose>-0.2 0 0.05 0 0 0</pose>
+        <visual name="arm2_base_visual">
+          <geometry>
+            <cylinder>
+              <radius>0.03</radius>
+              <length>0.2</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
           </material>
         </visual>
         <collision name="arm2_base_collision">
           <geometry>
             <cylinder>
-              <radius>0.05</radius>
-              <length>0.1</length>
+              <radius>0.03</radius>
+              <length>0.2</length>
             </cylinder>
           </geometry>
         </collision>
