@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="da_vinci_robot">
+  
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  
+  <!-- Base link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.2 0.2 0.1"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.2 0.2 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- Arm 1 (Patient Side Manipulator 1) -->
+  <joint name="arm1_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="arm1_base_link"/>
+    <origin xyz="0.15 0 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <link name="arm1_base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- Arm 1 joints and links (simplified 6-DOF) -->
+  <xacro:macro name="arm_joint" params="name parent child xyz rpy axis lower upper">
+    <joint name="${name}" type="revolute">
+      <parent link="${parent}"/>
+      <child link="${child}"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+      <axis xyz="${axis}"/>
+      <limit lower="${lower}" upper="${upper}" effort="10" velocity="1"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="arm_link" params="name length radius">
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <cylinder radius="${radius}" length="${length}"/>
+        </geometry>
+        <material name="blue">
+          <color rgba="0 0 1 1"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <cylinder radius="${radius}" length="${length}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.3"/>
+        <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+
+  <!-- Arm 1 links -->
+  <xacro:arm_link name="arm1_link1" length="0.15" radius="0.02"/>
+  <xacro:arm_link name="arm1_link2" length="0.12" radius="0.02"/>
+  <xacro:arm_link name="arm1_link3" length="0.10" radius="0.02"/>
+  <xacro:arm_link name="arm1_link4" length="0.08" radius="0.015"/>
+  <xacro:arm_link name="arm1_link5" length="0.06" radius="0.015"/>
+  <xacro:arm_link name="arm1_link6" length="0.04" radius="0.01"/>
+
+  <!-- Arm 1 joints -->
+  <xacro:arm_joint name="arm1_joint1" parent="arm1_base_link" child="arm1_link1" 
+                   xyz="0 0 0.05" rpy="0 0 0" axis="0 0 1" lower="-${PI}" upper="${PI}"/>
+  <xacro:arm_joint name="arm1_joint2" parent="arm1_link1" child="arm1_link2" 
+                   xyz="0 0 0.075" rpy="0 0 0" axis="0 1 0" lower="-${PI/2}" upper="${PI/2}"/>
+  <xacro:arm_joint name="arm1_joint3" parent="arm1_link2" child="arm1_link3" 
+                   xyz="0 0 0.06" rpy="0 0 0" axis="0 1 0" lower="-${PI/2}" upper="${PI/2}"/>
+  <xacro:arm_joint name="arm1_joint4" parent="arm1_link3" child="arm1_link4" 
+                   xyz="0 0 0.05" rpy="0 0 0" axis="1 0 0" lower="-${PI}" upper="${PI}"/>
+  <xacro:arm_joint name="arm1_joint5" parent="arm1_link4" child="arm1_link5" 
+                   xyz="0 0 0.04" rpy="0 0 0" axis="0 1 0" lower="-${PI/2}" upper="${PI/2}"/>
+  <xacro:arm_joint name="arm1_joint6" parent="arm1_link5" child="arm1_link6" 
+                   xyz="0 0 0.03" rpy="0 0 0" axis="1 0 0" lower="-${PI}" upper="${PI}"/>
+
+  <!-- End effector for Arm 1 (Large Needle Driver) -->
+  <joint name="arm1_ee_joint" type="fixed">
+    <parent link="arm1_link6"/>
+    <child link="arm1_end_effector"/>
+    <origin xyz="0 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <link name="arm1_end_effector">
+    <visual>
+      <geometry>
+        <box size="0.02 0.01 0.03"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.01 0.03"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- Arm 2 (Patient Side Manipulator 2) - Similar structure -->
+  <joint name="arm2_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="arm2_base_link"/>
+    <origin xyz="-0.15 0 0.05" rpy="0 0 0"/>
+  </joint>
+
+  <link name="arm2_base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.01"/>
+    </inertial>
+  </link>
+
+  <!-- Arm 2 links (reusing macro) -->
+  <xacro:arm_link name="arm2_link1" length="0.15" radius="0.02"/>
+  <xacro:arm_link name="arm2_link2" length="0.12" radius="0.02"/>
+  <xacro:arm_link name="arm2_link3" length="0.10" radius="0.02"/>
+  <xacro:arm_link name="arm2_link4" length="0.08" radius="0.015"/>
+  <xacro:arm_link name="arm2_link5" length="0.06" radius="0.015"/>
+  <xacro:arm_link name="arm2_link6" length="0.04" radius="0.01"/>
+
+  <!-- Arm 2 joints -->
+  <xacro:arm_joint name="arm2_joint1" parent="arm2_base_link" child="arm2_link1" 
+                   xyz="0 0 0.05" rpy="0 0 0" axis="0 0 1" lower="-${PI}" upper="${PI}"/>
+  <xacro:arm_joint name="arm2_joint2" parent="arm2_link1" child="arm2_link2" 
+                   xyz="0 0 0.075" rpy="0 0 0" axis="0 1 0" lower="-${PI/2}" upper="${PI/2}"/>
+  <xacro:arm_joint name="arm2_joint3" parent="arm2_link2" child="arm2_link3" 
+                   xyz="0 0 0.06" rpy="0 0 0" axis="0 1 0" lower="-${PI/2}" upper="${PI/2}"/>
+  <xacro:arm_joint name="arm2_joint4" parent="arm2_link3" child="arm2_link4" 
+                   xyz="0 0 0.05" rpy="0 0 0" axis="1 0 0" lower="-${PI}" upper="${PI}"/>
+  <xacro:arm_joint name="arm2_joint5" parent="arm2_link4" child="arm2_link5" 
+                   xyz="0 0 0.04" rpy="0 0 0" axis="0 1 0" lower="-${PI/2}" upper="${PI/2}"/>
+  <xacro:arm_joint name="arm2_joint6" parent="arm2_link5" child="arm2_link6" 
+                   xyz="0 0 0.03" rpy="0 0 0" axis="1 0 0" lower="-${PI}" upper="${PI}"/>
+
+  <!-- End effector for Arm 2 (ProGrasp Forcep) -->
+  <joint name="arm2_ee_joint" type="fixed">
+    <parent link="arm2_link6"/>
+    <child link="arm2_end_effector"/>
+    <origin xyz="0 0 0.02" rpy="0 0 0"/>
+  </joint>
+
+  <link name="arm2_end_effector">
+    <visual>
+      <geometry>
+        <box size="0.02 0.01 0.03"/>
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.02 0.01 0.03"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- Needle (attached to Arm 1) -->
+  <joint name="needle_joint" type="fixed">
+    <parent link="arm1_end_effector"/>
+    <child link="needle"/>
+    <origin xyz="0.01 0 0.015" rpy="0 0 0"/>
+  </joint>
+
+  <link name="needle">
+    <visual>
+      <geometry>
+        <cylinder radius="0.0005" length="0.03"/>
+      </geometry>
+      <material name="silver">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.0005" length="0.03"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- Tissue/Phantom -->
+  <joint name="tissue_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="tissue"/>
+    <origin xyz="0 0 0.15" rpy="0 0 0"/>
+  </joint>
+
+  <link name="tissue">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.02"/>
+      </geometry>
+      <material name="flesh">
+        <color rgba="1 0.8 0.6 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.1 0.1 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+  </link>
+
+  <!-- Camera mounts -->
+  <xacro:macro name="camera_mount" params="name parent xyz rpy">
+    <joint name="${name}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${name}"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+    
+    <link name="${name}">
+      <visual>
+        <geometry>
+          <box size="0.02 0.02 0.01"/>
+        </geometry>
+        <material name="black">
+          <color rgba="0 0 0 1"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <box size="0.02 0.02 0.01"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.05"/>
+        <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+      </inertial>
+    </link>
+  </xacro:macro>
+
+  <!-- 6 cameras as mentioned in the paper -->
+  <xacro:camera_mount name="camera1" parent="base_link" xyz="0.3 0.3 0.3" rpy="0 0.5 -0.8"/>
+  <xacro:camera_mount name="camera2" parent="base_link" xyz="-0.3 0.3 0.3" rpy="0 0.5 0.8"/>
+  <xacro:camera_mount name="camera3" parent="base_link" xyz="0.3 -0.3 0.3" rpy="0 0.5 -2.4"/>
+  <xacro:camera_mount name="camera4" parent="base_link" xyz="-0.3 -0.3 0.3" rpy="0 0.5 2.4"/>
+  <xacro:camera_mount name="camera5" parent="base_link" xyz="0 0.4 0.3" rpy="0 0.5 0"/>
+  <xacro:camera_mount name="camera6" parent="base_link" xyz="0 -0.4 0.3" rpy="0 0.5 3.14"/>
+
+  <!-- Gazebo Camera Sensors -->
+  <xacro:macro name="camera_sensor" params="name parent">
+    <gazebo reference="${name}">
+      <sensor type="camera" name="${name}_sensor">
+        <update_rate>30.0</update_rate>
+        <camera name="${name}">
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>800</width>
+            <height>600</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>0.0</updateRate>
+          <cameraName>${name}</cameraName>
+          <imageTopicName>image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <frameName>${name}_link</frameName>
+          <hackBaseline>0.07</hackBaseline>
+          <distortionK1>0.0</distortionK1>
+          <distortionK2>0.0</distortionK2>
+          <distortionK3>0.0</distortionK3>
+          <distortionT1>0.0</distortionT1>
+          <distortionT2>0.0</distortionT2>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- Apply camera sensors -->
+  <xacro:camera_sensor name="camera1" parent="base_link"/>
+  <xacro:camera_sensor name="camera2" parent="base_link"/>
+  <xacro:camera_sensor name="camera3" parent="base_link"/>
+  <xacro:camera_sensor name="camera4" parent="base_link"/>
+  <xacro:camera_sensor name="camera5" parent="base_link"/>
+  <xacro:camera_sensor name="camera6" parent="base_link"/>
+
+</robot>
