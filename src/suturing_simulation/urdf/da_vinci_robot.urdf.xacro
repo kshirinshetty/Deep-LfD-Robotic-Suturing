@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="da_vinci_robot">
+  
+  <xacro:property name="PI" value="3.1415926535897931"/>
+  
+  <!-- Base platform for the entire setup -->
+  <link name="platform">
+    <visual>
+      <geometry>
+        <box size="1.0 1.0 0.05"/>
+      </geometry>
+      <material name="dark_grey">
+        <color rgba="0.3 0.3 0.3 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1.0 1.0 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="20.0"/>
+      <inertia ixx="1.67" ixy="0" ixz="0" iyy="1.67" iyz="0" izz="1.67"/>
+    </inertial>
+  </link>
+
+  <!-- Support structure -->
+  <joint name="support_joint" type="fixed">
+    <parent link="platform"/>
+    <child link="support_structure"/>
+    <origin xyz="0 0 0.025" rpy="0 0 0"/>
+  </joint>
+
+  <link name="support_structure">
+    <visual>
+      <geometry>
+        <box size="0.8 0.8 0.4"/>
+      </geometry>
+      <material name="light_grey">
+        <color rgba="0.7 0.7 0.7 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.8 0.8 0.4"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="15.0"/>
+      <inertia ixx="0.4" ixy="0" ixz="0" iyy="0.4" iyz="0" izz="0.4"/>
+    </inertial>
+  </link>
+
+  <!-- Base link (mounted on support structure) -->
+  <joint name="base_joint" type="fixed">
+    <parent link="support_structure"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.25" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.4 0.4 0.1"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.4 0.4 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="0.04" ixy="0" ixz="0" iyy="0.04" iyz="0" izz="0.04"/>
+    </inertial>
+  </link>
+
+  <!-- Tissue/Phantom platform -->
+  <joint name="tissue_platform_joint" type="fixed">
+    <parent link="platform"/>
+    <child link="tissue_platform"/>
+    <origin xyz="0 0 0.025" rpy="0 0 0"/>
+  </joint>
+
+  <link name="tissue_platform">
+    <visual>
+      <geometry>
+        <box size="0.3 0.3 0.02"/>
+      </geometry>
+      <material name="white">
+        <color rgba="0.9 0.9 0.9 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.3 0.3 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.002" iyz="0" izz="0.002"/>
+    </inertial>
+  </link>
+
+  <!-- Tissue/Phantom -->
+  <joint name="tissue_joint" type="fixed">
+    <parent link="tissue_platform"/>
+    <child link="tissue"/>
+    <origin xyz="0 0 0.01" rpy="0 0 0"/>
+  </joint>
+
+  <link name="tissue">
+    <visual>
+      <geometry>
+        <box size="0.25 0.25 0.01"/>
+      </geometry>
+      <material name="flesh">
+        <color rgba="1 0.8 0.6 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.25 0.25 0.01"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- Rest of the robot components (arms, cameras, etc.) remain the same -->
+  <!-- ... (previous arm and camera definitions) ... -->
+
+</robot>

@@ -1,0 +1,23 @@
+<?xml version="1.6"?>
+<sdf version="1.6">
+  <model name="deformable_skin">
+    <static>true</static>
+    <pose>0 0 0.01 0 0 0</pose>
+    <link name="skin_link">
+      <inertial>
+        <mass>0.02</mass>
+        <inertia>
+          <ixx>1e-4</ixx><iyy>1e-4</iyy><izz>1e-4</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="skin_visual">
+        <geometry><box><size>0.15 0.1 0.015</size></box></geometry>
+        <material><ambient>0.9 0.6 0.6 1</ambient></material>
+      </visual>
+      <collision name="skin_collision">
+        <geometry><box><size>0.15 0.1 0.015</size></box></geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

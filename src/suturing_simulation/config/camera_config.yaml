@@ -1,0 +1,43 @@
+# Camera configuration for multi-view needle insertion dataset
+camera_common:
+  width: 640
+  height: 480
+  fps: 30
+  format: RGB8
+
+cameras:
+  camera1:
+    name: "top_left_view"
+    frame_id: "camera1"
+    position: [0.3, 0.3, 0.3]
+    orientation: [0, 0.5, -0.8]
+    
+  camera2:
+    name: "top_right_view"  
+    frame_id: "camera2"
+    position: [-0.3, 0.3, 0.3]
+    orientation: [0, 0.5, 0.8]
+    
+  camera3:
+    name: "bottom_left_view"
+    frame_id: "camera3"
+    position: [0.3, -0.3, 0.3]
+    orientation: [0, 0.5, -2.4]
+    
+  camera4:
+    name: "bottom_right_view"
+    frame_id: "camera4"
+    position: [-0.3, -0.3, 0.3]
+    orientation: [0, 0.5, 2.4]
+    
+  camera5:
+    name: "front_view"
+    frame_id: "camera5"
+    position: [0, 0.4, 0.3]
+    orientation: [0, 0.5, 0]
+    
+  camera6:
+    name: "back_view"
+    frame_id: "camera6"
+    position: [0, -0.4, 0.3]
+    orientation: [0, 0.5, 3.14]

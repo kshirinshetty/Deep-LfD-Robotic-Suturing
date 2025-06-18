@@ -1,0 +1,25 @@
+<?xml version="1.6"?>
+<sdf version="1.6">
+  <model name="needle_2">
+    <static>false</static>
+    <pose>0 0 0.03 0 0 0</pose>
+    <link name="needle_link">
+      <inertial>
+        <mass>0.005</mass>
+        <inertia>
+          <ixx>1e-6</ixx><iyy>1e-6</iyy><izz>1e-6</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="needle_visual">
+        <geometry><cylinder><radius>0.0015</radius><length>0.05</length></cylinder></geometry>
+        <material><ambient>0.2 0.2 0.9 1</ambient></material>
+        <pose>0 0 0.025 0 0 0</pose>
+      </visual>
+      <collision name="needle_collision">
+        <geometry><cylinder><radius>0.0015</radius><length>0.05</length></cylinder></geometry>
+        <pose>0 0 0.025 0 0 0</pose>
+      </collision>
+    </link>
+  </model>
+</sdf>
