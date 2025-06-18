@@ -1,0 +1,594 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="suturing_world">
+
+    <!-- Physics and GUI omitted for brevity; reuse your existing setup -->
+    <!-- Physics -->
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <!-- Plugin for physics -->
+    <plugin filename="libgz-sim-physics-system.so" name="gz::sim::systems::Physics"/>
+    <!-- Plugin for user commands -->
+    <plugin filename="libgz-sim-user-commands-system.so" name="gz::sim::systems::UserCommands"/>
+    <!-- Plugin for scene broadcast -->
+    <plugin filename="libgz-sim-scene-broadcaster-system.so" name="gz::sim::systems::SceneBroadcaster"/>
+    <!-- Plugin for sensors -->
+    <plugin filename="libgz-sim-sensors-system.so" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <!-- GUI -->
+    <gui fullscreen="0">
+      <plugin filename="GzScene3D" name="3D View">
+        <gz-gui>
+          <title>3D View</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="string" key="state">docked</property>
+        </gz-gui>
+        <engine>ogre2</engine>
+        <scene>scene</scene>
+        <ambient_light>0.4 0.4 0.4</ambient_light>
+        <background_color>0.8 0.8 0.8</background_color>
+        <camera_pose>1.0 1.0 1.0 0 0.5 -0.8</camera_pose>
+      </plugin>
+      <plugin filename="WorldControl" name="World control">
+        <gz-gui>
+          <title>World control</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="bool" key="resizable">false</property>
+          <property type="double" key="height">72</property>
+          <property type="double" key="width">121</property>
+          <property type="double" key="z">1</property>
+          <property type="string" key="state">floating</property>
+          <anchors target="3D View">
+            <line own="left" target="left"/>
+            <line own="bottom" target="bottom"/>
+          </anchors>
+        </gz-gui>
+        <play_pause>true</play_pause>
+        <step>true</step>
+        <start_paused>true</start_paused>
+      </plugin>
+      <plugin filename="WorldStats" name="World stats">
+        <gz-gui>
+          <title>World stats</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="bool" key="resizable">false</property>
+          <property type="double" key="height">110</property>
+          <property type="double" key="width">290</property>
+          <property type="double" key="z">1</property>
+          <property type="string" key="state">floating</property>
+          <anchors target="3D View">
+            <line own="right" target="right"/>
+            <line own="bottom" target="bottom"/>
+          </anchors>
+        </gz-gui>
+        <sim_time>true</sim_time>
+        <real_time>true</real_time>
+        <real_time_factor>true</real_time_factor>
+        <iterations>true</iterations>
+      </plugin>
+    </gui>
+
+    <!-- Lighting -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+    
+    <!-- Ground plane -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.8 0.8 0.8 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Da Vinci Robot Model with 2x 6-DOF arms and needles -->
+    <model name="da_vinci_robot">
+      <pose>0 0 0.5 0 0 0</pose>
+      
+      <!-- Base link -->
+      <link name="base_link">
+        <pose>0 0 0 0 0 0</pose>
+        <visual name="visual">
+        <geometry>
+          <box><size>1 1 0.2</size></box>
+        </geometry>
+        <material><diffuse>0.2 0.2 0.2 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box><size>1 1 0.2</size></box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>100</mass>
+        <inertia>
+          <ixx>10</ixx><iyy>10</iyy><izz>10</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      </link>
+
+
+    <!-- Weld arms to the base -->
+    <joint name="arm1_shoulder_fixed" type="fixed">
+      <parent>base_link</parent>
+      <child>arm1_shoulder</child>
+    </joint>
+    <joint name="arm2_shoulder_fixed" type="fixed">
+      <parent>base_link</parent>
+      <child>arm2_shoulder</child>
+    </joint>
+
+    <!-- All other components (arms, needles, etc.) remain unchanged below -->
+
+    <!-- Arm 1 -->
+    <link name="arm1_shoulder">
+      <pose>0.3 0.3 0.8 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <cylinder><radius>0.03</radius><length>0.1</length></cylinder>
+        </geometry>
+        <material><diffuse>0.7 0.7 0.7 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder><radius>0.03</radius><length>0.1</length></cylinder>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.1</mass>
+        <inertia><ixx>0.001</ixx><iyy>0.001</iyy><izz>0.001</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm1_upper_arm">
+      <pose>0.3 0.3 0.7 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.05 0.05 0.2</size></box>
+        </geometry>
+        <material><diffuse>0.6 0.6 0.9 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box><size>0.05 0.05 0.2</size></box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.1</mass>
+        <inertia><ixx>0.001</ixx><iyy>0.001</iyy><izz>0.001</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm1_elbow">
+      <pose>0.3 0.3 0.55 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <sphere><radius>0.03</radius></sphere>
+        </geometry>
+        <material><diffuse>0.8 0.5 0.5 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <sphere><radius>0.03</radius></sphere>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia><ixx>0.0005</ixx><iyy>0.0005</iyy><izz>0.0005</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm1_forearm">
+      <pose>0.3 0.3 0.45 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.04 0.04 0.2</size></box>
+        </geometry>
+        <material><diffuse>0.3 0.3 0.8 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box><size>0.04 0.04 0.2</size></box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.08</mass>
+        <inertia><ixx>0.0008</ixx><iyy>0.0008</iyy><izz>0.0008</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm1_wrist">
+      <pose>0.3 0.3 0.35 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <sphere><radius>0.02</radius></sphere>
+        </geometry>
+        <material><diffuse>0.7 0.4 0.4 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <sphere><radius>0.02</radius></sphere>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.03</mass>
+        <inertia><ixx>0.0003</ixx><iyy>0.0003</iyy><izz>0.0003</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm1_tool">
+      <pose>0.3 0.3 0.3 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.01 0.01 0.1</size></box>
+        </geometry>
+        <material><diffuse>0.2 0.8 0.2 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box><size>0.01 0.01 0.1</size></box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia><ixx>0.0002</ixx><iyy>0.0002</iyy><izz>0.0002</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="needle1">
+      <pose>0.3 0.3 0.25 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <cylinder><radius>0.002</radius><length>0.03</length></cylinder>
+        </geometry>
+        <material><diffuse>0.9 0.9 0.9 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder><radius>0.002</radius><length>0.03</length></cylinder>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.005</mass>
+        <inertia><ixx>0.00001</ixx><iyy>0.00001</iyy><izz>0.00001</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+      <joint name="joint1_base_shoulder" type="revolute">
+        <parent>base_link</parent><child>arm1_shoulder</child>
+        <axis><xyz>0 0 1</xyz><limit><lower>-3.14</lower><upper>3.14</upper></limit></axis>
+      </joint>
+      <joint name="joint1_shoulder_upper" type="revolute">
+        <parent>arm1_shoulder</parent><child>arm1_upper_arm</child>
+        <axis><xyz>0 1 0</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint1_upper_elbow" type="revolute">
+        <parent>arm1_upper_arm</parent><child>arm1_elbow</child>
+        <axis><xyz>0 0 1</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint1_elbow_forearm" type="revolute">
+        <parent>arm1_elbow</parent><child>arm1_forearm</child>
+        <axis><xyz>0 1 0</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint1_forearm_wrist" type="revolute">
+        <parent>arm1_forearm</parent><child>arm1_wrist</child>
+        <axis><xyz>0 0 1</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint1_wrist_tool" type="revolute">
+        <parent>arm1_wrist</parent><child>arm1_tool</child>
+        <axis><xyz>0 1 0</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint1_tool_needle" type="fixed">
+        <parent>arm1_tool</parent><child>needle1</child>
+      </joint>
+
+          <!-- Arm 2 -->
+    <link name="arm2_shoulder">
+      <pose>-0.3 0.3 0.8 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <cylinder><radius>0.03</radius><length>0.1</length></cylinder>
+        </geometry>
+        <material><diffuse>0.7 0.7 0.7 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder><radius>0.03</radius><length>0.1</length></cylinder>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.1</mass>
+        <inertia><ixx>0.001</ixx><iyy>0.001</iyy><izz>0.001</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm2_upper_arm">
+      <pose>-0.3 0.3 0.7 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.05 0.05 0.2</size></box>
+        </geometry>
+        <material><diffuse>0.9 0.6 0.6 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box><size>0.05 0.05 0.2</size></box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.1</mass>
+        <inertia><ixx>0.001</ixx><iyy>0.001</iyy><izz>0.001</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm2_elbow">
+      <pose>-0.3 0.3 0.55 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <sphere><radius>0.03</radius></sphere>
+        </geometry>
+        <material><diffuse>0.5 0.8 0.5 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <sphere><radius>0.03</radius></sphere>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.05</mass>
+        <inertia><ixx>0.0005</ixx><iyy>0.0005</iyy><izz>0.0005</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm2_forearm">
+      <pose>-0.3 0.3 0.45 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.04 0.04 0.2</size></box>
+        </geometry>
+        <material><diffuse>0.2 0.2 0.8 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box><size>0.04 0.04 0.2</size></box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.08</mass>
+        <inertia><ixx>0.0008</ixx><iyy>0.0008</iyy><izz>0.0008</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm2_wrist">
+      <pose>-0.3 0.3 0.35 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <sphere><radius>0.02</radius></sphere>
+        </geometry>
+        <material><diffuse>0.4 0.7 0.7 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <sphere><radius>0.02</radius></sphere>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.03</mass>
+        <inertia><ixx>0.0003</ixx><iyy>0.0003</iyy><izz>0.0003</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="arm2_tool">
+      <pose>-0.3 0.3 0.3 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <box><size>0.01 0.01 0.1</size></box>
+        </geometry>
+        <material><diffuse>0.2 0.9 0.2 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <box><size>0.01 0.01 0.1</size></box>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.02</mass>
+        <inertia><ixx>0.0002</ixx><iyy>0.0002</iyy><izz>0.0002</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+    <link name="needle2">
+      <pose>-0.3 0.3 0.25 0 0 0</pose>
+      <visual name="visual">
+        <geometry>
+          <cylinder><radius>0.002</radius><length>0.03</length></cylinder>
+        </geometry>
+        <material><diffuse>0.9 0.9 0.9 1</diffuse></material>
+      </visual>
+      <collision name="collision">
+        <geometry>
+          <cylinder><radius>0.002</radius><length>0.03</length></cylinder>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass>0.005</mass>
+        <inertia><ixx>0.00001</ixx><iyy>0.00001</iyy><izz>0.00001</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia>
+      </inertial>
+    </link>
+
+      <joint name="joint2_base_shoulder" type="revolute">
+        <parent>base_link</parent><child>arm2_shoulder</child>
+        <axis><xyz>0 0 1</xyz><limit><lower>-3.14</lower><upper>3.14</upper></limit></axis>
+      </joint>
+      <joint name="joint2_shoulder_upper" type="revolute">
+        <parent>arm2_shoulder</parent><child>arm2_upper_arm</child>
+        <axis><xyz>0 1 0</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint2_upper_elbow" type="revolute">
+        <parent>arm2_upper_arm</parent><child>arm2_elbow</child>
+        <axis><xyz>0 0 1</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint2_elbow_forearm" type="revolute">
+        <parent>arm2_elbow</parent><child>arm2_forearm</child>
+        <axis><xyz>0 1 0</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint2_forearm_wrist" type="revolute">
+        <parent>arm2_forearm</parent><child>arm2_wrist</child>
+        <axis><xyz>0 0 1</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint2_wrist_tool" type="revolute">
+        <parent>arm2_wrist</parent><child>arm2_tool</child>
+        <axis><xyz>0 1 0</xyz><limit><lower>-1.57</lower><upper>1.57</upper></limit></axis>
+      </joint>
+      <joint name="joint2_tool_needle" type="fixed">
+        <parent>arm2_tool</parent><child>needle2</child>
+      </joint>
+
+      <!-- Tissue -->
+      <link name="tissue">
+        <pose>0 0 0.15 0 0 0</pose>
+        <visual name="tissue_visual">
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.02</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>1 0.8 0.6 1</ambient>
+            <diffuse>1 0.8 0.6 1</diffuse>
+          </material>
+        </visual>
+        <collision name="tissue_collision">
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.02</size>
+            </box>
+          </geometry>
+        </collision>
+        <inertial>
+          <mass>0.2</mass>
+          <inertia>
+            <ixx>0.001</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.001</iyy>
+            <iyz>0</iyz>
+            <izz>0.001</izz>
+          </inertia>
+        </inertial>
+      </link>
+      <joint name="base_to_tissue" type="fixed">
+        <parent>base_link</parent>
+        <child>tissue</child>
+      </joint>
+
+      <!-- Cameras -->
+      <link name="camera1">
+        <pose>0.3 0.3 0.3 0 0.5 -0.8</pose>
+        <visual name="camera1_visual">
+          <geometry>
+            <box>
+              <size>0.02 0.02 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 0 0 1</ambient>
+            <diffuse>0 0 0 1</diffuse>
+          </material>
+        </visual>
+        <sensor name="camera1_sensor" type="camera">
+          <camera>
+            <horizontal_fov>1.047</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+        </sensor>
+      </link>
+
+      <link name="camera2">
+        <pose>-0.3 0.3 0.3 0 0.5 0.8</pose>
+        <visual name="camera2_visual">
+          <geometry>
+            <box>
+              <size>0.02 0.02 0.01</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 0 0 1</ambient>
+            <diffuse>0 0 0 1</diffuse>
+          </material>
+        </visual>
+        <sensor name="camera2_sensor" type="camera">
+          <camera>
+            <horizontal_fov>1.047</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+            </image>
+            <clip>
+              <near>0.1</near>
+              <far>100</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <update_rate>30</update_rate>
+        </sensor>
+      </link>
+
+      <!-- Camera joints -->
+      <joint name="base_to_camera1" type="fixed">
+        <parent>base_link</parent>
+        <child>camera1</child>
+      </joint>
+
+      <joint name="base_to_camera2" type="fixed">
+        <parent>base_link</parent>
+        <child>camera2</child>
+      </joint>
+
+    </model>
+    
+  </world>
+</sdf>
