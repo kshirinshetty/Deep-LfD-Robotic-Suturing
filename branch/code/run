@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -ex
+
+mkdir -p /results/all_images
+# This script captures image sequence from the surgery videos
+python -u preprocessing/imgdataset.py
+
+# This script runs a customized design CNN and saves the model. Can be replaced with
+# AlexNet.py, VGG19.py, ResNet.py ...
+#python -u models/customized_CNN.py # epochs set to 1 only for faster run here. run VGG for faster run here
+python -u models/VGG19.py
+
+# This script runs a RCN (customized_CNN + LSTM). But it needs the customized_CNN models to be trained and saved first
+#python -u models/RCN_LSTM.py

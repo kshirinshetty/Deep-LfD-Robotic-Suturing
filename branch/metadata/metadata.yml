@@ -1,0 +1,14 @@
+metadata_version: 1
+name: A data-set of piercing needle through deformable objects for Deep Learning from Demonstrations
+description: 'This capsule includes the software for a research on "A data set for needle insertion in autonomous robotic surgery". The repository can be found at: https://github.com/imanlab/d-lfd'
+tags:
+- robotic surgery
+- Deep Learning
+- Learning from Demonstration
+authors:
+- name: Amir Ghalamzan
+  affiliations:
+  - name: University of Lincoln
+- name: Kiyanoush Nazari
+  affiliations:
+  - name: University of Lincoln
