@@ -66,7 +66,7 @@ for testNumber in range(1, 61):
             return False
 
         # Get video properties
-        fps = vidcap.get(cv2.CAP_PROP_FPS)
+        fps = (vidcap.get(cv2.CAP_PROP_FPS))/3
         frame_count = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
         duration = frame_count / fps
         
