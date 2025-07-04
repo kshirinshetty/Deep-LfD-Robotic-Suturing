@@ -2,3 +2,6 @@ results/all_images/
 branch/data/Data
 branch/results/all_images
 branch/data/Data
+branch/results/CNN_intermediate_layer.h5
+branch/results/Test1-60_fps3_images.npy
+branch/results/AlexNet.h5

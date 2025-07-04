@@ -1,156 +1,113 @@
 import cv2
 import os
 import numpy as np
-import glob
 import pandas as pd
-from scipy import ndimage
-from scipy import misc
 from PIL import Image
-import matplotlib.pyplot as plt
+import glob
 import sys
 sys.setrecursionlimit(10000)
 
 # Updated file paths
 base_path = '/home/mona/suturing_ws/src/Deep-LfD-Robotic-Suturing/branch/data/Data'
 results_path = '/home/mona/suturing_ws/src/Deep-LfD-Robotic-Suturing/branch/results'
+all_images_dir = os.path.join(results_path, 'all_images')
 
-fname = os.path.join(base_path, 'DatasetSize.csv')
-testSize = pd.read_csv(fname, header=None)
-print("Dataset sizes:", testSize)
+print("Loading images from existing directory...")
+print(f"Images directory: {all_images_dir}")
 
-videoList = ['p1_left.mp4', 'p1_right.mp4', 'p2_left.mp4', 'p2_right.mp4', 'p3_left.mp4', 'p3_right.mp4']
-cameraName = ['p1_left', 'p1_right', 'p2_left', 'p2_right', 'p3_left', 'p3_right']
+# Check if directory exists
+if not os.path.exists(all_images_dir):
+    print(f"Error: Directory {all_images_dir} does not exist!")
+    sys.exit(1)
 
-# Process specific test range (modify as needed)
-test_start = 1
-test_end = 21  # Processing tests 1-20
+# Get all image files
+image_files = glob.glob(os.path.join(all_images_dir, "*.jpg"))
+print(f"Found {len(image_files)} image files")
 
-for testNumber in range(test_start, test_end):
-    test_path = os.path.join(base_path, str(testNumber))
-    print(f"Processing test {testNumber}: {test_path}")
-    
-    if not os.path.exists(test_path):
-        print(f"Warning: Path {test_path} does not exist, skipping...")
-        continue
-    
-    os.chdir(test_path)
-    
-    for vidNameCounter in range(1, 7):
-        camera_name = cameraName[vidNameCounter - 1]
-        video_file = videoList[vidNameCounter - 1]
+# Sort files to ensure consistent ordering
+# Expected format: T{testNumber}Cam{vidNameCounter}_img{count}.jpg
+def sort_key(filename):
+    basename = os.path.basename(filename)
+    # Extract test number, camera, and image number for proper sorting
+    try:
+        # Format: T1Cam1_img1.jpg -> extract 1, 1, 1
+        parts = basename.replace('.jpg', '').split('_')
+        test_cam = parts[0]  # T1Cam1
+        img_num = int(parts[1].replace('img', ''))  # 1
         
-        if not os.path.exists(video_file):
-            print(f"Warning: Video file {video_file} not found")
-            continue
+        test_num = int(test_cam.split('Cam')[0].replace('T', ''))  # 1
+        cam_num = int(test_cam.split('Cam')[1])  # 1
         
-        # Create camera-specific directory
-        camera_dir = f'results/camera_{camera_name}_data'
-        os.makedirs(camera_dir, exist_ok=True)
-        
-        print(f"Processing camera {vidNameCounter}: {camera_name}")
-        vidcap = cv2.VideoCapture(video_file)
+        return (test_num, cam_num, img_num)
+    except:
+        return (0, 0, 0)
 
-        def getFrame(sec):
-            vidcap.set(cv2.CAP_PROP_POS_MSEC, sec * 1000)
-            hasFrames, image = vidcap.read()
-            if hasFrames:
-                # Resize image to 224x224 for consistency with neural network input
-                image_resized = cv2.resize(image, (224, 224))
-                img_path = os.path.join(camera_dir, f"{count}.jpg")
-                cv2.imwrite(img_path, image_resized)
-                return True
-            return False
+image_files.sort(key=sort_key)
+print(f"Sorted {len(image_files)} image files")
 
-        # Get video properties
-        fps = vidcap.get(cv2.CAP_PROP_FPS)
-        frame_count = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
-        duration = frame_count / fps
+# Load images into array
+print("Loading images into numpy array...")
+all_images = []
+failed_count = 0
+
+for i, img_file in enumerate(image_files):
+    try:
+        # Load image using PIL to ensure RGB format
+        image = Image.open(img_file)
         
-        print(f"FPS: {fps}, Duration: {duration:.2f}s")
+        # Ensure image is RGB
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
         
-        # Extract frames
-        sec = 5.05  # Start time for image capture
+        # Ensure image is 224x224 (should already be, but verify)
+        if image.size != (224, 224):
+            image = image.resize((224, 224))
         
-        # Fix indexing - DatasetSize.csv might have data in columns, not rows
-        if testSize.shape[0] == 1:  # If only one row, data is in columns
-            num_frames = int(testSize.iloc[0, testNumber-1])  # Get from column
-        else:  # If multiple rows, data is in rows
-            num_frames = int(testSize.iloc[testNumber-1, 0])  # Get from row
+        # Convert to numpy array
+        image_array = np.array(image, dtype=np.uint8)
+        all_images.append(image_array)
+        
+        if (i + 1) % 1000 == 0:
+            print(f"  Loaded {i + 1}/{len(image_files)} images...")
             
-        frameRate = (duration - sec) / num_frames if num_frames > 0 else 1.0
-        
-        count = 1
-        success = getFrame(sec)
-        while success and count < num_frames:
-            count += 1
-            sec = sec + frameRate
-            sec = round(sec, 4)
-            success = getFrame(sec)
-        
-        vidcap.release()
-
-# Create consolidated dataset from extracted images
-print("Creating consolidated image dataset...")
-
-testSize_array = np.array(testSize)
-subFolder = ['camera_p1_left_data', 'camera_p1_right_data', 'camera_p2_left_data', 
-             'camera_p2_right_data', 'camera_p3_left_data', 'camera_p3_right_data']
-
-# Calculate total number of images
-total_images = 0
-for i in range(test_start-1, test_end-1):
-    if testSize.shape[0] == 1:  # Data in columns
-        total_images += int(testSize.iloc[0, i]) * 6  # 6 cameras per test
-    else:  # Data in rows
-        total_images += int(testSize.iloc[i, 0]) * 6  # 6 cameras per test
-
-print(f"Expected total images: {total_images}")
-
-# Load and preprocess images
-x = []
-os.chdir(base_path)
-
-for i in range(test_start, test_end):
-    test_dir = os.path.join(base_path, str(i))
-    if not os.path.exists(test_dir):
+    except Exception as e:
+        print(f"Error loading {img_file}: {e}")
+        failed_count += 1
         continue
-    
-    # Fix indexing for num_frames
-    if testSize.shape[0] == 1:  # Data in columns
-        num_frames = int(testSize.iloc[0, i-1])
-    else:  # Data in rows
-        num_frames = int(testSize.iloc[i-1, 0])
-    
-    for j in range(1, num_frames + 1):
-        for folder in subFolder:
-            camera_path = os.path.join(test_dir, folder)
-            if not os.path.exists(camera_path):
-                continue
-                
-            img_file = os.path.join(camera_path, f"{j}.jpg")
-            if os.path.exists(img_file):
-                try:
-                    image = Image.open(img_file)
-                    # Ensure image is RGB and resize to 224x224
-                    if image.mode != 'RGB':
-                        image = image.convert('RGB')
-                    image_resized = image.resize((224, 224))
-                    image_array = np.array(image_resized)
-                    x.append(image_array)
-                except Exception as e:
-                    print(f"Error loading {img_file}: {e}")
 
-print(f"Loaded {len(x)} images")
+print(f"Successfully loaded {len(all_images)} images")
+if failed_count > 0:
+    print(f"Failed to load {failed_count} images")
 
-# Save preprocessed dataset
-if x:
-    x_array = np.array(x)
+# Convert to numpy array
+if all_images:
+    print("Converting to numpy array...")
+    x_array = np.array(all_images, dtype=np.uint8)
     print(f"Final dataset shape: {x_array.shape}")
     
-    save_path = os.path.join(results_path, f'Test{test_start}-{test_end-1}_images.npy')
+    # Save the array
+    save_path = os.path.join(results_path, 'Test1-60_fps3_images.npy')
     np.save(save_path, x_array)
     print(f"Dataset saved to: {save_path}")
+    
+    # Print some statistics
+    print(f"Data type: {x_array.dtype}")
+    print(f"Memory usage: {x_array.nbytes / (1024*1024):.2f} MB")
+    print(f"Image shape: {x_array.shape[1:]}")
+    print(f"Pixel value range: [{x_array.min()}, {x_array.max()}]")
+    
+    # Verify the target count
+    if len(all_images) == 13560:
+        print("✅ Successfully created array with exactly 13,560 images!")
+    else:
+        print(f"⚠️  Expected 13,560 images but got {len(all_images)}")
+        
+    # Show first few filenames for verification
+    print("\nFirst 10 image files (for verification):")
+    for i in range(min(10, len(image_files))):
+        print(f"  {os.path.basename(image_files[i])}")
+        
 else:
-    print("No images were loaded successfully!")
+    print("❌ No images were loaded successfully!")
 
-print("Video to image conversion completed.")
+print("Array creation from existing images completed.")

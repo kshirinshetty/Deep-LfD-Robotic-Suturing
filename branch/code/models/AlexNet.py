@@ -89,7 +89,7 @@ with tf.device('/gpu:0'):
             labels = np.array(batch_y, dtype=np.float32)
 
             return (images, robot_data), labels
-
+    
     batch_size = 64
     train_gen = MyCustomGenerator(X_train_filenames, robot_state_train_input, robot_state_train_label, batch_size)
     test_gen = MyCustomGenerator(X_test_filenames, robot_state_test_input, robot_state_test_label, batch_size)
