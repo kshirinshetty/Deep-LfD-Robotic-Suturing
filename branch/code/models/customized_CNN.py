@@ -333,7 +333,7 @@ with tf.device('/gpu:1'):
         training_start = time.time()
         history = model.fit(
             my_training_batch_generator, 
-            epochs=20,  # Increased epochs
+            epochs=15,  # Increased epochs
             validation_data=my_testing_batch_generator,
             callbacks=[monitor],
             verbose=1
