@@ -5,3 +5,12 @@ branch/data/Data
 branch/results/CNN_intermediate_layer.h5
 branch/results/Test1-60_fps3_images.npy
 branch/results/AlexNet.h5
+branch/results/Customized_CNN_intermediate_layer.h5
+branch/results/Customized_CNN.h5
+branch/results/RCN_GRU.h5
+branch/results/RCN_LSTM.h5
+branch/results/ResNet152V2.h5
+branch/results/ResNet152V2_intermediate_layer.h5
+branch/results/VGG19.h5
+branch/results/ResNet152V2_input_scaler.pkl
+branch/results/ResNet152V2_output_scaler.pkl
