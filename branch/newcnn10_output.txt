@@ -1,0 +1,131 @@
+Deep-LfD Robotic Suturing System
+==================================================
+Benchmarking CNN architectures for suturing...
+/home/mona/.local/lib/python3.12/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/home/mona/.local/lib/python3.12/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=EfficientNet_B0_Weights.IMAGENET1K_V1`. You can also use `weights=EfficientNet_B0_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/home/mona/.local/lib/python3.12/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=MobileNet_V3_Large_Weights.IMAGENET1K_V1`. You can also use `weights=MobileNet_V3_Large_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/home/mona/.local/lib/python3.12/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet18_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet18_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+EfficientNet-B0:
+  Parameters: 6,950,739
+  Inference Time: 12.86ms
+  FPS: 77.7
+
+MobileNetV3:
+  Parameters: 6,734,594
+  Inference Time: 8.92ms
+  FPS: 112.2
+
+ResNet-18:
+  Parameters: 11,986,993
+  Inference Time: 15.46ms
+  FPS: 64.7
+
+Creating demonstration data...
+Initializing Deep-LfD model...
+Training on cpu...
+Training Deep-LfD model for 10 epochs...
+
+Epoch 1/10
+Batch 0, Loss: 2.9410
+Batch 10, Loss: 2.5266
+Batch 20, Loss: 3.4190
+Batch 30, Loss: 2.5247
+Batch 40, Loss: 3.0576
+Train Loss: 2.8702, Val Loss: 2.8681
+Best model saved!
+
+Epoch 2/10
+Batch 0, Loss: 3.2999
+Batch 10, Loss: 3.0194
+Batch 20, Loss: 2.6651
+Batch 30, Loss: 2.5303
+Batch 40, Loss: 3.6418
+Train Loss: 2.8663, Val Loss: 2.8386
+Best model saved!
+
+Epoch 3/10
+Batch 0, Loss: 3.3804
+Batch 10, Loss: 3.4182
+Batch 20, Loss: 3.3123
+Batch 30, Loss: 2.7888
+Batch 40, Loss: 2.3118
+Train Loss: 2.8233, Val Loss: 2.6814
+Best model saved!
+
+Epoch 4/10
+Batch 0, Loss: 2.4197
+Batch 10, Loss: 2.2450
+Batch 20, Loss: 2.5131
+Batch 30, Loss: 2.5550
+Batch 40, Loss: 2.9170
+Train Loss: 2.7646, Val Loss: 2.6520
+Best model saved!
+
+Epoch 5/10
+Batch 0, Loss: 2.4080
+Batch 10, Loss: 2.7185
+Batch 20, Loss: 2.2715
+Batch 30, Loss: 2.5193
+Batch 40, Loss: 2.8661
+Train Loss: 2.6854, Val Loss: 2.5332
+Best model saved!
+
+Epoch 6/10
+Batch 0, Loss: 2.6118
+Batch 10, Loss: 2.9568
+Batch 20, Loss: 3.1485
+Batch 30, Loss: 2.1670
+Batch 40, Loss: 2.3535
+Train Loss: 2.5941, Val Loss: 2.3675
+Best model saved!
+
+Epoch 7/10
+Batch 0, Loss: 2.4660
+Batch 10, Loss: 2.6068
+Batch 20, Loss: 2.3675
+Batch 30, Loss: 2.1946
+Batch 40, Loss: 2.7294
+Train Loss: 2.5127, Val Loss: 2.2963
+Best model saved!
+
+Epoch 8/10
+Batch 0, Loss: 1.8193
+Batch 10, Loss: 1.9181
+Batch 20, Loss: 2.2724
+Batch 30, Loss: 2.3543
+Batch 40, Loss: 2.6752
+Train Loss: 2.4407, Val Loss: 2.2340
+Best model saved!
+
+Epoch 9/10
+Batch 0, Loss: 2.2402
+Batch 10, Loss: 2.8190
+Batch 20, Loss: 2.1231
+Batch 30, Loss: 2.3446
+Batch 40, Loss: 2.1577
+Train Loss: 2.4043, Val Loss: 2.1767
+Best model saved!
+
+Epoch 10/10
+Batch 0, Loss: 2.4279
+Batch 10, Loss: 2.0552
+Batch 20, Loss: 2.5280
+Batch 30, Loss: 2.0517
+Batch 40, Loss: 2.5171
+Train Loss: 2.3357, Val Loss: 2.1242
+Best model saved!
+Testing real-time controller...
+Frame 0: Action=0, Trajectory=[0. 0. 0.], Time=0.60ms
+Frame 5: Action=0, Trajectory=[0. 0. 0.], Time=0.50ms
+Frame 10: Action=3, Trajectory=[-0.35065678  0.13192219 -0.89248884], Time=161.23ms
+Frame 15: Action=3, Trajectory=[ 0.32530108 -0.25968802 -0.6913682 ], Time=169.56ms
+
+Performance Statistics:
+Mean FPS: 5.9
+Mean inference time: 169.11ms
+
+Deep-LfD Suturing System ready for deployment!

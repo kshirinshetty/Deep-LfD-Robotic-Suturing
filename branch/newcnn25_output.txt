@@ -1,0 +1,266 @@
+Deep-LfD Robotic Suturing System
+==================================================
+Benchmarking CNN architectures for suturing...
+/home/mona/.local/lib/python3.12/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
+  warnings.warn(
+/home/mona/.local/lib/python3.12/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=EfficientNet_B0_Weights.IMAGENET1K_V1`. You can also use `weights=EfficientNet_B0_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/home/mona/.local/lib/python3.12/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=MobileNet_V3_Large_Weights.IMAGENET1K_V1`. You can also use `weights=MobileNet_V3_Large_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+/home/mona/.local/lib/python3.12/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet18_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet18_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+EfficientNet-B0:
+  Parameters: 6,950,739
+  Inference Time: 12.76ms
+  FPS: 78.3
+
+MobileNetV3:
+  Parameters: 6,734,594
+  Inference Time: 8.62ms
+  FPS: 116.0
+
+ResNet-18:
+  Parameters: 11,986,993
+  Inference Time: 16.21ms
+  FPS: 61.7
+
+Creating demonstration data...
+Initializing Deep-LfD model...
+Training on cpu...
+Training Deep-LfD model for 25 epochs...
+
+Epoch 1/25
+Batch 0, Loss: 2.8745
+Batch 10, Loss: 2.3502
+Batch 20, Loss: 2.3930
+Batch 30, Loss: 2.9749
+Batch 40, Loss: 3.4039
+Train Loss: 2.8270, Val Loss: 2.8249
+Best model saved!
+
+Epoch 2/25
+Batch 0, Loss: 2.8128
+Batch 10, Loss: 2.5856
+Batch 20, Loss: 2.8993
+Batch 30, Loss: 2.8577
+Batch 40, Loss: 2.8450
+Train Loss: 2.8209, Val Loss: 2.8034
+Best model saved!
+
+Epoch 3/25
+Batch 0, Loss: 2.4336
+Batch 10, Loss: 2.8953
+Batch 20, Loss: 2.7519
+Batch 30, Loss: 2.3125
+Batch 40, Loss: 2.4466
+Train Loss: 2.7898, Val Loss: 2.6640
+Best model saved!
+
+Epoch 4/25
+Batch 0, Loss: 2.7181
+Batch 10, Loss: 2.8045
+Batch 20, Loss: 2.7905
+Batch 30, Loss: 2.3233
+Batch 40, Loss: 3.5020
+Train Loss: 2.6392, Val Loss: 2.5190
+Best model saved!
+
+Epoch 5/25
+Batch 0, Loss: 2.8388
+Batch 10, Loss: 2.5098
+Batch 20, Loss: 2.3207
+Batch 30, Loss: 3.1512
+Batch 40, Loss: 2.6410
+Train Loss: 2.5979, Val Loss: 2.4213
+Best model saved!
+
+Epoch 6/25
+Batch 0, Loss: 3.0004
+Batch 10, Loss: 2.7653
+Batch 20, Loss: 2.4587
+Batch 30, Loss: 2.5436
+Batch 40, Loss: 1.8489
+Train Loss: 2.5032, Val Loss: 2.2351
+Best model saved!
+
+Epoch 7/25
+Batch 0, Loss: 2.4096
+Batch 10, Loss: 2.6697
+Batch 20, Loss: 2.9023
+Batch 30, Loss: 1.7730
+Batch 40, Loss: 2.6006
+Train Loss: 2.3935, Val Loss: 2.0791
+Best model saved!
+
+Epoch 8/25
+Batch 0, Loss: 2.2711
+Batch 10, Loss: 2.0233
+Batch 20, Loss: 1.7973
+Batch 30, Loss: 2.3799
+Batch 40, Loss: 1.6590
+Train Loss: 2.1583, Val Loss: 1.8457
+Best model saved!
+
+Epoch 9/25
+Batch 0, Loss: 2.3581
+Batch 10, Loss: 1.5496
+Batch 20, Loss: 2.5719
+Batch 30, Loss: 2.1759
+Batch 40, Loss: 2.1070
+Train Loss: 2.0247, Val Loss: 1.6520
+Best model saved!
+
+Epoch 10/25
+Batch 0, Loss: 1.8306
+Batch 10, Loss: 2.9442
+Batch 20, Loss: 2.3499
+Batch 30, Loss: 1.8177
+Batch 40, Loss: 2.1104
+Train Loss: 1.8992, Val Loss: 1.5649
+Best model saved!
+
+Epoch 11/25
+Batch 0, Loss: 1.6578
+Batch 10, Loss: 1.2540
+Batch 20, Loss: 1.3636
+Batch 30, Loss: 2.4441
+Batch 40, Loss: 1.8966
+Train Loss: 1.8363, Val Loss: 1.4541
+Best model saved!
+
+Epoch 12/25
+Batch 0, Loss: 1.9834
+Batch 10, Loss: 2.0696
+Batch 20, Loss: 0.8604
+Batch 30, Loss: 2.0933
+Batch 40, Loss: 1.5141
+Train Loss: 1.7230, Val Loss: 1.3902
+Best model saved!
+
+Epoch 13/25
+Batch 0, Loss: 2.2507
+Batch 10, Loss: 1.9853
+Batch 20, Loss: 1.0607
+Batch 30, Loss: 1.4896
+Batch 40, Loss: 1.1994
+Train Loss: 1.6710, Val Loss: 1.2682
+Best model saved!
+
+Epoch 14/25
+Batch 0, Loss: 2.2383
+Batch 10, Loss: 1.5712
+Batch 20, Loss: 3.0195
+Batch 30, Loss: 0.7166
+Batch 40, Loss: 0.7465
+Train Loss: 1.5817, Val Loss: 1.1517
+Best model saved!
+
+Epoch 15/25
+Batch 0, Loss: 2.5076
+Batch 10, Loss: 1.9803
+Batch 20, Loss: 1.0171
+Batch 30, Loss: 1.8558
+Batch 40, Loss: 1.4602
+Train Loss: 1.6180, Val Loss: 1.1098
+Best model saved!
+
+Epoch 16/25
+Batch 0, Loss: 1.5758
+Batch 10, Loss: 0.9991
+Batch 20, Loss: 1.1275
+Batch 30, Loss: 1.3601
+Batch 40, Loss: 0.8353
+Train Loss: 1.4108, Val Loss: 1.0406
+Best model saved!
+
+Epoch 17/25
+Batch 0, Loss: 1.8943
+Batch 10, Loss: 1.0300
+Batch 20, Loss: 0.6725
+Batch 30, Loss: 0.7649
+Batch 40, Loss: 1.6826
+Train Loss: 1.3864, Val Loss: 0.9542
+Best model saved!
+
+Epoch 18/25
+Batch 0, Loss: 0.7775
+Batch 10, Loss: 0.5994
+Batch 20, Loss: 2.6005
+Batch 30, Loss: 1.0188
+Batch 40, Loss: 2.0933
+Train Loss: 1.4185, Val Loss: 0.9077
+Best model saved!
+
+Epoch 19/25
+Batch 0, Loss: 1.0035
+Batch 10, Loss: 1.2579
+Batch 20, Loss: 1.0933
+Batch 30, Loss: 1.5534
+Batch 40, Loss: 1.3311
+Train Loss: 1.2708, Val Loss: 0.8373
+Best model saved!
+
+Epoch 20/25
+Batch 0, Loss: 1.8898
+Batch 10, Loss: 1.0544
+Batch 20, Loss: 1.2673
+Batch 30, Loss: 1.8735
+Batch 40, Loss: 1.1601
+Train Loss: 1.2344, Val Loss: 0.7555
+Best model saved!
+
+Epoch 21/25
+Batch 0, Loss: 0.7089
+Batch 10, Loss: 1.4616
+Batch 20, Loss: 1.6595
+Batch 30, Loss: 0.8751
+Batch 40, Loss: 1.2539
+Train Loss: 1.2234, Val Loss: 0.7335
+Best model saved!
+
+Epoch 22/25
+Batch 0, Loss: 0.8114
+Batch 10, Loss: 0.9617
+Batch 20, Loss: 1.1646
+Batch 30, Loss: 0.8625
+Batch 40, Loss: 1.3431
+Train Loss: 1.1773, Val Loss: 0.7089
+Best model saved!
+
+Epoch 23/25
+Batch 0, Loss: 1.7304
+Batch 10, Loss: 0.3798
+Batch 20, Loss: 1.2527
+Batch 30, Loss: 1.3892
+Batch 40, Loss: 0.3993
+Train Loss: 1.1117, Val Loss: 0.6720
+Best model saved!
+
+Epoch 24/25
+Batch 0, Loss: 1.7217
+Batch 10, Loss: 1.1372
+Batch 20, Loss: 1.3031
+Batch 30, Loss: 0.5827
+Batch 40, Loss: 1.3076
+Train Loss: 1.0219, Val Loss: 0.5968
+Best model saved!
+
+Epoch 25/25
+Batch 0, Loss: 0.5757
+Batch 10, Loss: 2.4664
+Batch 20, Loss: 2.0476
+Batch 30, Loss: 0.5828
+Batch 40, Loss: 0.7836
+Train Loss: 0.9579, Val Loss: 0.5266
+Best model saved!
+Testing real-time controller...
+Frame 0: Action=0, Trajectory=[0. 0. 0.], Time=0.61ms
+Frame 5: Action=0, Trajectory=[0. 0. 0.], Time=0.44ms
+Frame 10: Action=1, Trajectory=[-1.2609687   0.74017704  0.00428462], Time=158.78ms
+Frame 15: Action=1, Trajectory=[-0.5647852   0.80820954 -0.05080867], Time=161.99ms
+
+Performance Statistics:
+Mean FPS: 6.2
+Mean inference time: 161.92ms
+
+Deep-LfD Suturing System ready for deployment!
